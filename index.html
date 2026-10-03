@@ -266,16 +266,48 @@
 <script>
 (function(){
   const bgm=document.getElementById('bgm'),btn=document.getElementById('bgm-toggle');
-  bgm.volume=0.25;
-  function setUI(on){btn.textContent=on?'🎶':'🔇';btn.classList.toggle('playing',on);btn.setAttribute('aria-label',on?'Tắt nhạc nền':'Bật nhạc nền')}
-  function play(){bgm.play().then(()=>setUI(true)).catch(()=>setUI(false))}
-  let userPaused=false;
-  btn.addEventListener('click',e=>{e.stopPropagation();if(bgm.paused){userPaused=false;play()}else{userPaused=true;bgm.pause();setUI(false)}});
-  const startOnce=()=>{if(bgm.paused&&!userPaused)play();window.removeEventListener('pointerdown',startOnce);window.removeEventListener('keydown',startOnce)};
-  window.addEventListener('pointerdown',startOnce);window.addEventListener('keydown',startOnce);
-  let wasPlaying=false;
-  document.addEventListener('visibilitychange',()=>{if(document.hidden){wasPlaying=!bgm.paused;bgm.pause()}else if(wasPlaying){play()}});
-})();
-</script>
+  bgm.volume = 0.25;
+
+function setUI(on) {
+  btn.textContent = on ? '🎶' : '🔇';
+  btn.classList.toggle('playing', on);
+}
+
+function play() {
+  bgm.play().then(() => setUI(true)).catch(() => setUI(false));
+}
+
+let userPaused = false;
+
+btn.addEventListener('click', (e) => {
+  e.stopPropagation();
+  if (bgm.paused) {
+    userPaused = false;
+    play();
+  } else {
+    userPaused = true;
+    bgm.pause();
+    setUI(false);
+  }
+});
+
+const startOnce = () => {
+  if (bgm.paused && !userPaused) play();
+  window.removeEventListener('pointerdown', startOnce);
+  window.removeEventListener('keydown', startOnce);
+};
+
+window.addEventListener('pointerdown', startOnce);
+window.addEventListener('keydown', startOnce);
+
+let wasPlaying = false;
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) {
+    wasPlaying = !bgm.paused;
+    bgm.pause();
+  } else if (wasPlaying && !userPaused) {
+    play();
+  }
+});
 </body>
 </html>
